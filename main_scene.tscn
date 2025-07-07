@@ -1,0 +1,64 @@
+[gd_scene load_steps=13 format=3 uid="uid://d33y5etj1y8n"]
+
+[ext_resource type="PackedScene" uid="uid://cea8s26rsiy2" path="res://player.tscn" id="1_0f027"]
+[ext_resource type="Script" uid="uid://c417liagkhd6t" path="res://main.gd" id="1_2c62f"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o3jxj"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_0f027"]
+sky_material = SubResource("ProceduralSkyMaterial_o3jxj")
+
+[sub_resource type="Environment" id="Environment_2c62f"]
+background_mode = 2
+sky = SubResource("Sky_0f027")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o3jxj"]
+vertex_color_use_as_albedo = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0f027"]
+
+[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_2c62f"]
+noise = SubResource("FastNoiseLite_0f027")
+channel = 0
+
+[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_gyfs4"]
+
+[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_d5x1h"]
+
+[sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_8mm7a"]
+models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_gyfs4"), SubResource("VoxelBlockyModelCube_d5x1h")])
+
+[sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_hq1ik"]
+library = SubResource("VoxelBlockyLibrary_8mm7a")
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_2c62f")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_2c62f")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="VoxelTerrain" type="VoxelTerrain" parent="."]
+material_override = SubResource("StandardMaterial3D_o3jxj")
+generator = SubResource("VoxelGeneratorNoise2D_2c62f")
+mesher = SubResource("VoxelMesherBlocky_hq1ik")
+
+[node name="Player" parent="." instance=ExtResource("1_0f027")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7533, 77.0946, 4.31591)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Blackout" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
