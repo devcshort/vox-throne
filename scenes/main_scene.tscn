@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://d33y5etj1y8n"]
+[gd_scene load_steps=18 format=3 uid="uid://d33y5etj1y8n"]
 
 [ext_resource type="PackedScene" uid="uid://cea8s26rsiy2" path="res://scenes/player.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://c417liagkhd6t" path="res://scripts/main.gd" id="1_2c62f"]
+[ext_resource type="Texture2D" uid="uid://d2c4r1pfs0nqj" path="res://terrain.png" id="2_7ykc4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o3jxj"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -15,25 +16,56 @@ background_mode = 2
 sky = SubResource("Sky_0f027")
 tonemap_mode = 2
 glow_enabled = true
+fog_enabled = true
+fog_mode = 1
+fog_density = 1.0
+fog_depth_begin = 50.0
+fog_depth_end = 200.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o3jxj"]
-vertex_color_use_as_albedo = true
+[sub_resource type="VoxelStreamRegionFiles" id="VoxelStreamRegionFiles_pw63i"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0f027"]
+frequency = 0.0013
 
 [sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_2c62f"]
 noise = SubResource("FastNoiseLite_0f027")
 channel = 0
 
-[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_gyfs4"]
+[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_pw63i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pu3yx"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 0)
+albedo_texture = ExtResource("2_7ykc4")
+metallic_specular = 0.0
+roughness = 0.0
+normal_scale = -16.0
+texture_filter = 0
 
 [sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_d5x1h"]
+tile_left = Vector2i(3, 0)
+tile_right = Vector2i(3, 0)
+tile_bottom = Vector2i(2, 0)
+tile_top = Vector2i(1, 9)
+tile_back = Vector2i(3, 0)
+tile_front = Vector2i(3, 0)
+color = Color(1, 1, 1, 0)
+material_override_0 = SubResource("StandardMaterial3D_pu3yx")
 
 [sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_8mm7a"]
-models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_gyfs4"), SubResource("VoxelBlockyModelCube_d5x1h")])
+models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_pw63i"), SubResource("VoxelBlockyModelCube_d5x1h")])
 
 [sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_hq1ik"]
 library = SubResource("VoxelBlockyLibrary_8mm7a")
+
+[sub_resource type="BoxMesh" id="BoxMesh_pw63i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ykc4"]
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_pw63i"]
+font_size = 36
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_2c62f")
@@ -46,19 +78,39 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="VoxelTerrain" type="VoxelTerrain" parent="."]
-material_override = SubResource("StandardMaterial3D_o3jxj")
+stream = SubResource("VoxelStreamRegionFiles_pw63i")
 generator = SubResource("VoxelGeneratorNoise2D_2c62f")
 mesher = SubResource("VoxelMesherBlocky_hq1ik")
 
+[node name="HighlightBlock" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_pw63i")
+surface_material_override/0 = SubResource("StandardMaterial3D_7ykc4")
+
 [node name="Player" parent="." instance=ExtResource("1_0f027")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7533, 77.0946, 4.31591)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.3654, 54.6651, 4.431)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Blackout" type="ColorRect" parent="UI"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="UI/Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "+"
+label_settings = SubResource("LabelSettings_pw63i")
+horizontal_alignment = 1
+vertical_alignment = 1

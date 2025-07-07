@@ -2,15 +2,11 @@ extends Node3D
 
 @onready var player = $Player
 @onready var terrain = $VoxelTerrain
-@onready var blackout = $UI/Blackout
 
 func _ready():
-	$UI/Blackout.visible = true
-	
 	# Freeze player
 	player.freeze_movement = true
 	player.visible = false
-	blackout.visible = true
 
 	await get_tree().process_frame
 	await get_tree().process_frame  # Give terrain time to generate
@@ -19,7 +15,6 @@ func _ready():
 
 	player.freeze_movement = false
 	player.visible = true
-	blackout.visible = false
 	
 	
 func position_player_on_ground():

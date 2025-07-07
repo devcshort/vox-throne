@@ -1,6 +1,6 @@
 extends CharacterBody3D
 
-var freeze_movement: bool = false
+var freeze_movement: bool = true
 
 @export var move_speed := 5.0
 @export var jump_velocity := 6.0
