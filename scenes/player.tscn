@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cea8s26rsiy2"]
 
-[ext_resource type="Script" uid="uid://duy0cyuunval" path="res://playermovement.gd" id="1_glpr6"]
-[ext_resource type="Script" uid="uid://cbef0sjl45odx" path="res://camera_controller.gd" id="2_pjt0s"]
+[ext_resource type="Script" uid="uid://duy0cyuunval" path="res://scripts/playermovement.gd" id="1_glpr6"]
+[ext_resource type="Script" uid="uid://cbef0sjl45odx" path="res://scripts/camera_controller.gd" id="2_pjt0s"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pjt0s"]
 

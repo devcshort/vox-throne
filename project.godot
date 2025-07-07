@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Vox Throne"
-run/main_scene="res://main_scene.tscn"
+config/name="Voxcalibur"
+run/main_scene="res://scenes/main_scene.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
