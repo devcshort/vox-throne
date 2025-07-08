@@ -49,7 +49,7 @@ static func calculate_normals(positions, indices) -> PackedVector3Array:
 	for i in range(0, tcounts.size()):
 		tcounts[i] = 0
 	
-	var tri_count = indices.size() / 3
+	var _tri_count = indices.size() / 3
 	
 	var i = 0
 	while i < indices.size():
