@@ -12,6 +12,7 @@ var freeze_movement: bool = true
 @export var mouse_sensitivity := 0.002
 @export var terrain_path : NodePath
 @export var cursor_material : Material
+@export var max_place_distance := 3.0  # or whatever distance you want
 
 @onready var camera_pivot = $CameraPivot
 var _head = null
@@ -49,7 +50,7 @@ func _ready():
 func get_pointed_voxel() -> VoxelRaycastResult:
 	var origin = _head.get_global_transform().origin
 	var forward = -_head.get_global_transform().basis.z.normalized()
-	var hit = _terrain_tool.raycast(origin, forward, 10)
+	var hit = _terrain_tool.raycast(origin, forward, 2)
 	return hit
 
 func _unhandled_input(event: InputEvent):
@@ -128,7 +129,7 @@ func _physics_process(delta: float):
 	move_and_slide()
 
 
-func can_place_voxel_at(pos: Vector3i):
+func can_place_voxel_at(pos: Vector3i) -> bool:
 	var space_state = get_viewport().get_world_3d().get_direct_space_state()
 	var params = PhysicsShapeQueryParameters3D.new()
 	params.collision_mask = COLLISION_LAYER_AVATAR
