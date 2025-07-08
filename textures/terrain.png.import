@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d2c4r1pfs0nqj"
-path.s3tc="res://.godot/imported/terrain.png-84a626877af7de08ecf24965bda52835.s3tc.ctex"
+path.s3tc="res://.godot/imported/terrain.png-c02b115b005d5ad54d48cdbec8686646.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://terrain.png"
-dest_files=["res://.godot/imported/terrain.png-84a626877af7de08ecf24965bda52835.s3tc.ctex"]
+source_file="res://textures/terrain.png"
+dest_files=["res://.godot/imported/terrain.png-c02b115b005d5ad54d48cdbec8686646.s3tc.ctex"]
 
 [params]
 

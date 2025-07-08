@@ -1,8 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://d33y5etj1y8n"]
+[gd_scene load_steps=17 format=3 uid="uid://d33y5etj1y8n"]
 
 [ext_resource type="PackedScene" uid="uid://cea8s26rsiy2" path="res://scenes/player.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://c417liagkhd6t" path="res://scripts/main.gd" id="1_2c62f"]
-[ext_resource type="Texture2D" uid="uid://d2c4r1pfs0nqj" path="res://terrain.png" id="2_7ykc4"]
+[ext_resource type="Texture2D" uid="uid://d2c4r1pfs0nqj" path="res://textures/terrain.png" id="2_7ykc4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_o3jxj"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -58,22 +58,19 @@ models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_pw63i"), Su
 [sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_hq1ik"]
 library = SubResource("VoxelBlockyLibrary_8mm7a")
 
-[sub_resource type="BoxMesh" id="BoxMesh_pw63i"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ykc4"]
-emission_enabled = true
-emission = Color(1, 0, 0, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gubc5"]
+albedo_color = Color(0, 0.960784, 1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_pw63i"]
 font_size = 36
 
-[node name="Node3D" type="Node3D"]
+[node name="Root" type="Node3D"]
 script = ExtResource("1_2c62f")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="Environment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_2c62f")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
@@ -82,12 +79,10 @@ stream = SubResource("VoxelStreamRegionFiles_pw63i")
 generator = SubResource("VoxelGeneratorNoise2D_2c62f")
 mesher = SubResource("VoxelMesherBlocky_hq1ik")
 
-[node name="HighlightBlock" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_pw63i")
-surface_material_override/0 = SubResource("StandardMaterial3D_7ykc4")
-
 [node name="Player" parent="." instance=ExtResource("1_0f027")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.3654, 54.6651, 4.431)
+terrain_path = NodePath("../VoxelTerrain")
+cursor_material = SubResource("StandardMaterial3D_gubc5")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
