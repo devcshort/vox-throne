@@ -27,12 +27,17 @@ var _terrain_node: VoxelTerrain
 var pitch := 0.0
 
 func _enter_tree() -> void:
-	set_multiplayer_authority(str(name).to_int())
+	
+	
+	if multiplayer.is_server():
+		set_multiplayer_authority(str(name).to_int())
 	
 	var voxel_viewer := VoxelViewer.new()
 	add_child(voxel_viewer)
 
 func _ready():
+	if not is_multiplayer_authority(): return
+	
 	_head = camera
 	camera.current = true
 	
@@ -58,6 +63,8 @@ func get_pointed_voxel() -> VoxelRaycastResult:
 	return hit
 
 func _unhandled_input(event: InputEvent):
+	if not is_multiplayer_authority(): return
+	
 	if event is InputEventMouseButton:
 		if event.pressed:
 			match event.button_index:
@@ -75,6 +82,8 @@ func _unhandled_input(event: InputEvent):
 		camera.rotation.x = pitch
 
 func _physics_process(delta: float):
+	if not is_multiplayer_authority(): return
+	
 	if _terrain_node == null:
 		push_error("No terrain node")
 		return

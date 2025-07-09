@@ -82,7 +82,7 @@ func _on_connection_failed():
 
 func _on_server_disconnected():
 	print("Server disconnected")
-	
+
 func _spawn_character(peer_id: int, pos: Vector3) -> Node3D:
 	var node_name = str(peer_id)
 	if _characters_container.has_node(node_name):
@@ -98,7 +98,7 @@ func _spawn_character(peer_id: int, pos: Vector3) -> Node3D:
 	voxel_viewer.set_network_peer_id(peer_id)
 	voxel_viewer.requires_data_block_notifications = true
 	voxel_viewer.requires_visuals = false
-	character.add_child(voxel_viewer)
+	character.add_child(voxel_viewer, true)
 	
 	_characters_container.add_child(character)
 	return character
