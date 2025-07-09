@@ -59,7 +59,7 @@ script = ExtResource("1_r4h3b")
 environment = SubResource("Environment_r4h3b")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.364096, 0.931361, 0, -0.931361, -0.364096, 0, 62.2652, 0)
+transform = Transform3D(1, 0, 0, 0, -0.310261, 0.950651, 0, -0.950651, -0.310261, 0, 62.2652, 0)
 shadow_enabled = true
 
 [node name="VoxelTerrain" type="VoxelTerrain" parent="."]
