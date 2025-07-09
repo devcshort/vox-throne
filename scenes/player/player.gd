@@ -1,7 +1,6 @@
 extends CharacterBody3D
 
 const Util = preload("res://common/util.gd")
-
 const COLLISION_LAYER_AVATAR = 2
 
 var freeze_movement: bool = true
@@ -10,29 +9,32 @@ var freeze_movement: bool = true
 @export var jump_velocity := 6.0
 @export var gravity := 20.0
 @export var mouse_sensitivity := 0.002
-@export var terrain_path : NodePath
 @export var cursor_material : Material
 @export var max_place_distance := 3.0  # or whatever distance you want
+@export var sensitivity := 0.002
+@export var max_pitch := deg_to_rad(85)
+@export var terrain : NodePath
 
-@onready var camera_pivot = $CameraPivot
+@onready var camera = $Camera
 var _head = null
 
-var _terrain : VoxelTerrain = null
 var _terrain_tool = null
 var _cursor = null
 var _action_place := false
 var _action_remove := false
+var _terrain_node: VoxelTerrain
 
 var pitch := 0.0
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(str(name).to_int())
+	
+	var voxel_viewer := VoxelViewer.new()
+	add_child(voxel_viewer)
+
 func _ready():
-	if terrain_path == NodePath():
-		_terrain = get_parent().get_node(get_parent().terrain)
-		terrain_path = _terrain.get_path() # For correctness
-	else:
-		_terrain = get_node(terrain_path)
-		
-	_head = camera_pivot
+	_head = camera
+	camera.current = true
 	
 	var mesh = Util.create_wirecube_mesh(Color(0,0,0))
 	var mesh_instance = MeshInstance3D.new()
@@ -42,15 +44,17 @@ func _ready():
 	mesh_instance.set_scale(Vector3(1,1,1)*1.01)
 	_cursor = mesh_instance
 	
-	_terrain.add_child(_cursor)
-	_terrain_tool = _terrain.get_voxel_tool()
+	if has_node(terrain):
+		_terrain_node = get_node(terrain)
+		_terrain_node.add_child(_cursor)
+		_terrain_tool = _terrain_node.get_voxel_tool()
 		
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func get_pointed_voxel() -> VoxelRaycastResult:
 	var origin = _head.get_global_transform().origin
 	var forward = -_head.get_global_transform().basis.z.normalized()
-	var hit = _terrain_tool.raycast(origin, forward, 2)
+	var hit = _terrain_tool.raycast(origin, forward, 3)
 	return hit
 
 func _unhandled_input(event: InputEvent):
@@ -68,17 +72,13 @@ func _unhandled_input(event: InputEvent):
 
 		# Pitch (vertical)
 		pitch = clamp(pitch - event.relative.y * mouse_sensitivity, deg_to_rad(-89), deg_to_rad(89))
-		camera_pivot.rotation.x = pitch
+		camera.rotation.x = pitch
 
 func _physics_process(delta: float):
-	if freeze_movement:
-		velocity = Vector3.ZERO
-		move_and_slide()
+	if _terrain_node == null:
+		push_error("No terrain node")
 		return
 		
-	if _terrain == null:
-		return
-	
 	var hit := get_pointed_voxel()
 	if hit != null:
 		_cursor.show()
@@ -128,7 +128,6 @@ func _physics_process(delta: float):
 
 	move_and_slide()
 
-
 func can_place_voxel_at(pos: Vector3i) -> bool:
 	var space_state = get_viewport().get_world_3d().get_direct_space_state()
 	var params = PhysicsShapeQueryParameters3D.new()
@@ -141,12 +140,10 @@ func can_place_voxel_at(pos: Vector3i) -> bool:
 	var hits = space_state.intersect_shape(params)
 	return hits.size() == 0
 
-
 func place(center: Vector3i):
 	_terrain_tool.channel = VoxelBuffer.CHANNEL_TYPE
 	_terrain_tool.value = 1
 	_terrain_tool.do_point(center)
-
 
 func dig(center: Vector3i):
 	_terrain_tool.channel = VoxelBuffer.CHANNEL_TYPE

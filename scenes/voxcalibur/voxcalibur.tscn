@@ -1,0 +1,62 @@
+[gd_scene load_steps=12 format=3 uid="uid://dmud7jyjre2mf"]
+
+[ext_resource type="Script" uid="uid://cwurnb6lumi51" path="res://scenes/voxcalibur/voxcalibur.gd" id="1_r4h3b"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_r4h3b"]
+ground_color = Color(0.149, 0.902, 0.745, 1)
+
+[sub_resource type="Sky" id="Sky_hdwae"]
+sky_material = SubResource("PhysicalSkyMaterial_r4h3b")
+
+[sub_resource type="Environment" id="Environment_r4h3b"]
+background_mode = 2
+background_color = Color(0.319873, 0.319873, 0.319873, 1)
+sky = SubResource("Sky_hdwae")
+ambient_light_source = 2
+ambient_light_color = Color(0.549, 0.549, 0.549, 1)
+ambient_light_energy = 0.7
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+glow_enabled = true
+glow_hdr_threshold = 0.5
+fog_enabled = true
+fog_mode = 1
+fog_density = 1.0
+fog_depth_begin = 50.0
+
+[sub_resource type="VoxelStreamRegionFiles" id="VoxelStreamRegionFiles_r4h3b"]
+directory = "res://voxcalibur/save"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_hdwae"]
+frequency = 0.0013
+
+[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_ccuwk"]
+noise = SubResource("FastNoiseLite_hdwae")
+channel = 0
+
+[sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_r4h3b"]
+
+[sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_hdwae"]
+
+[sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_ccuwk"]
+models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_r4h3b"), SubResource("VoxelBlockyModelCube_hdwae")])
+
+[sub_resource type="VoxelMesherBlocky" id="VoxelMesherBlocky_6bwxj"]
+library = SubResource("VoxelBlockyLibrary_ccuwk")
+
+[node name="Voxcalibur" type="Node3D"]
+script = ExtResource("1_r4h3b")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_r4h3b")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.364096, 0.931361, 0, -0.931361, -0.364096, 0, 62.2652, 0)
+shadow_enabled = true
+
+[node name="VoxelTerrain" type="VoxelTerrain" parent="."]
+stream = SubResource("VoxelStreamRegionFiles_r4h3b")
+generator = SubResource("VoxelGeneratorNoise2D_ccuwk")
+mesher = SubResource("VoxelMesherBlocky_6bwxj")
+
+[node name="Players" type="Node3D" parent="."]

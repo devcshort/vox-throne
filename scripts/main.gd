@@ -1,36 +1,54 @@
 extends Node3D
 
-@onready var player = $Player
-@onready var terrain = $VoxelTerrain
+const Voxcalibur = preload("res://scenes/voxcalibur/voxcalibur.gd")
+const VoxcaliburScene = preload("res://scenes/voxcalibur/voxcalibur.tscn")
+const Player = preload("res://scenes/player/player.tscn")
 
-func _ready():
-	# Freeze player
-	player.freeze_movement = true
-	player.visible = false
+@onready var _main_menu = $MainMenu
+@onready var _ui = $UI
+@onready var _single_player_button = $MainMenu/PanelContainer/MarginContainer/VBoxContainer/StartSinglePlayer
+@onready var _host_game_button = $MainMenu/PanelContainer/MarginContainer/VBoxContainer/HostGame
+@onready var _join_game_button = $MainMenu/PanelContainer/MarginContainer/VBoxContainer/JoinGame
 
-	await get_tree().process_frame
-	await get_tree().process_frame  # Give terrain time to generate
+@export var port: int = 8090
 
-	position_player_on_ground()
+var _game: Voxcalibur
 
-	player.freeze_movement = false
-	player.visible = true
+func set_viewport_name(name: String) -> void:
+	get_viewport().get_window().title = str("Voxcalibur ", name)
+
+func _ready() -> void:
+	_ui.hide()
 	
+	_single_player_button.pressed.connect(_on_single_player_button_pressed)
+	_host_game_button.pressed.connect(_on_host_game_button_pressed)
+	_join_game_button.pressed.connect(_on_join_game_button_pressed)
+
+func _on_single_player_button_pressed() -> void:
+	_game = VoxcaliburScene.instantiate()
+	_game.set_network_mode(Voxcalibur.NETWORK_MODE_SINGLEPLAYER)
+	add_child(_game)
+
+	_main_menu.hide()
+	_ui.show()
 	
-func position_player_on_ground():
-	var from = Vector3(0, 50, 0)
-	var to = from + Vector3.DOWN * 100
+func _on_host_game_button_pressed() -> void:
+	_game = VoxcaliburScene.instantiate()
+	_game.set_port(port)
+	_game.set_network_mode(Voxcalibur.NETWORK_MODE_HOST)
+	add_child(_game)
 
-	var space = get_world_3d().direct_space_state
+	_main_menu.hide()
+	_ui.show()
+	set_viewport_name("Server")
 
-	var query = PhysicsRayQueryParameters3D.new()
-	query.from = from
-	query.to = to
-	query.exclude = [player]  # Optional
+func _on_join_game_button_pressed() -> void:
+	_game = VoxcaliburScene.instantiate()
+	_game.set_ip("127.0.0.1")
+	_game.set_port(port)
+	_game.set_network_mode(Voxcalibur.NETWORK_MODE_CLIENT)
+	add_child(_game)
 
-	var result = space.intersect_ray(query)
-
-	if result:
-		player.global_position = result.position + Vector3.UP * 1.0
-	else:
-		print("Warning: No ground detected under spawn point.")
+	_main_menu.hide()
+	_ui.show()
+	set_viewport_name("Client")

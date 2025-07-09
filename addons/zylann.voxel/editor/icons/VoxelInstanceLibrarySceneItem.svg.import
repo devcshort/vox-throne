@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba52f07d5yo3h"
-path="res://.godot/imported/VoxelViewer.svg-233d46cde3944204bf1673b67bcb6520.ctex"
+uid="uid://ddtyygtp8xawu"
+path="res://.godot/imported/VoxelInstanceLibrarySceneItem.svg-f9f00545428710cdcbd67016dd03245a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://zylann.voxel/editor/icons/VoxelViewer.svg"
-dest_files=["res://.godot/imported/VoxelViewer.svg-233d46cde3944204bf1673b67bcb6520.ctex"]
+source_file="res://addons/zylann.voxel/editor/icons/VoxelInstanceLibrarySceneItem.svg"
+dest_files=["res://.godot/imported/VoxelInstanceLibrarySceneItem.svg-f9f00545428710cdcbd67016dd03245a.ctex"]
 
 [params]
 

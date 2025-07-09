@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nu7rlwe8l14k"
-path="res://.godot/imported/VoxelTerrainLarge.svg-bc984f71eee1795165f101ae90c139ab.ctex"
+uid="uid://deutogro3c2oo"
+path="res://.godot/imported/VoxelTerrain.svg-6dda89eef5acf15d83d0b911db903997.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://zylann.voxel/editor/icons/VoxelTerrainLarge.svg"
-dest_files=["res://.godot/imported/VoxelTerrainLarge.svg-bc984f71eee1795165f101ae90c139ab.ctex"]
+source_file="res://addons/zylann.voxel/editor/icons/VoxelTerrain.svg"
+dest_files=["res://.godot/imported/VoxelTerrain.svg-6dda89eef5acf15d83d0b911db903997.ctex"]
 
 [params]
 

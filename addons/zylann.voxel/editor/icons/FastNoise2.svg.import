@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dgnnn67ukqhgs"
-path="res://.godot/imported/VoxelInstanceLibrary.svg-7da0ea0f2814b63842ab6172c6a5ea9c.ctex"
+uid="uid://cb5hajx1qqyit"
+path="res://.godot/imported/FastNoise2.svg-23d22215ba869062fc3d196d458964b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://zylann.voxel/editor/icons/VoxelInstanceLibrary.svg"
-dest_files=["res://.godot/imported/VoxelInstanceLibrary.svg-7da0ea0f2814b63842ab6172c6a5ea9c.ctex"]
+source_file="res://addons/zylann.voxel/editor/icons/FastNoise2.svg"
+dest_files=["res://.godot/imported/FastNoise2.svg-23d22215ba869062fc3d196d458964b7.ctex"]
 
 [params]
 
