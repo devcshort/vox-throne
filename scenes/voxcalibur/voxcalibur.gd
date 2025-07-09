@@ -63,7 +63,26 @@ func _ready():
 		_spawn_character(SERVER_PEER_ID, Vector3(0, 64, 0))
 	
 func _on_peer_connected(new_peer_id: int):
-	_spawn_character(new_peer_id, Vector3(0, 64, 0))
+	if _network_mode == NETWORK_MODE_HOST:
+		var new_character =_spawn_character(new_peer_id, Vector3(0, 64, 0))
+		print(str("Sending own character to ", new_peer_id))
+		rpc_id(new_peer_id, &"receive_own_character", new_peer_id, new_character.position)
+		
+		# Send existing characters to the new peer
+		for i in _characters_container.get_child_count():
+			var character := _characters_container.get_child(i)
+			if character != new_character:
+				# TODO This sucks, find a better way to get peer ID from character
+				var peer_id := character.name.to_int()
+				print(str("Sending remote character ", peer_id, " to ", new_peer_id))
+				rpc_id(new_peer_id, &"receive_remote_character", peer_id, character.position)
+		
+		# Send new character to other clients
+		var peers := get_tree().get_multiplayer().get_peers()
+		for peer_id in peers:
+			if peer_id != new_peer_id:
+				print(str("Sending remote character ", peer_id, " to other ", new_peer_id))
+				rpc_id(peer_id, &"receive_remote_character", new_peer_id, new_character.position)
 
 func _on_peer_disconnected(peer_id: int):
 	print(str("Peer ", peer_id, " disconnected"))
@@ -94,11 +113,29 @@ func _spawn_character(peer_id: int, pos: Vector3) -> Node3D:
 	character.position = pos
 	character.terrain = get_terrain().get_path()
 	
-	var voxel_viewer := VoxelViewer.new()
-	voxel_viewer.set_network_peer_id(peer_id)
-	voxel_viewer.requires_data_block_notifications = true
-	voxel_viewer.requires_visuals = false
-	character.add_child(voxel_viewer, true)
+	if _network_mode == NETWORK_MODE_HOST:
+		var voxel_viewer := VoxelViewer.new()
+		voxel_viewer.requires_data_block_notifications = true
+		voxel_viewer.requires_visuals = false
+		voxel_viewer.requires_collisions = false
+		voxel_viewer.set_network_peer_id(peer_id)
+		voxel_viewer.requires_data_block_notifications = true
+		
+		character.set_multiplayer_authority(peer_id)
+		character.add_child(voxel_viewer)
+
+	if multiplayer.get_unique_id() == peer_id:
+		character.set_multiplayer_authority(peer_id)
 	
 	_characters_container.add_child(character)
 	return character
+
+@rpc("authority", "call_remote", "reliable", 0)
+func receive_remote_character(peer_id: int, pos: Vector3):
+	print(str("receive_remote_character ", peer_id, " at ", pos))
+	_spawn_character(peer_id, pos)
+
+@rpc("authority", "call_remote", "reliable", 0)
+func receive_own_character(peer_id: int, pos: Vector3):
+	print(str("receive_own_character ", peer_id, " at ", pos))
+	_spawn_character(peer_id, pos)

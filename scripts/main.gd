@@ -14,8 +14,8 @@ const Player = preload("res://scenes/player/player.tscn")
 
 var _game: Voxcalibur
 
-func set_viewport_name(name: String) -> void:
-	get_viewport().get_window().title = str("Voxcalibur ", name)
+func set_viewport_name(new_name: String) -> void:
+	get_viewport().get_window().title = str("Voxcalibur ", new_name)
 
 func _ready() -> void:
 	_ui.hide()

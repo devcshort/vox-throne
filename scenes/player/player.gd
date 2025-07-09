@@ -4,6 +4,7 @@ const Util = preload("res://common/util.gd")
 const COLLISION_LAYER_AVATAR = 2
 
 var freeze_movement: bool = true
+var terrain : NodePath
 
 @export var move_speed := 5.0
 @export var jump_velocity := 6.0
@@ -13,7 +14,6 @@ var freeze_movement: bool = true
 @export var max_place_distance := 3.0  # or whatever distance you want
 @export var sensitivity := 0.002
 @export var max_pitch := deg_to_rad(85)
-@export var terrain : NodePath
 
 @onready var camera = $Camera
 var _head = null
@@ -27,19 +27,12 @@ var _terrain_node: VoxelTerrain
 var pitch := 0.0
 
 func _enter_tree() -> void:
-	
-	
-	if multiplayer.is_server():
-		set_multiplayer_authority(str(name).to_int())
-	
 	var voxel_viewer := VoxelViewer.new()
 	add_child(voxel_viewer)
 
 func _ready():
-	if not is_multiplayer_authority(): return
-	
+
 	_head = camera
-	camera.current = true
 	
 	var mesh = Util.create_wirecube_mesh(Color(0,0,0))
 	var mesh_instance = MeshInstance3D.new()
@@ -54,6 +47,9 @@ func _ready():
 		_terrain_node.add_child(_cursor)
 		_terrain_tool = _terrain_node.get_voxel_tool()
 		
+	if not is_multiplayer_authority(): return
+	
+	camera.current = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func get_pointed_voxel() -> VoxelRaycastResult:
@@ -99,10 +95,10 @@ func _physics_process(delta: float):
 		if _action_place:
 			var pos = hit.previous_position
 			if can_place_voxel_at(pos):
-				place(pos)
+				place.rpc(pos)
 		
 		elif _action_remove:
-			dig(hit.position)
+			dig.rpc(hit.position)
 
 	_action_place = false
 	_action_remove = false
@@ -136,6 +132,7 @@ func _physics_process(delta: float):
 			velocity.y = jump_velocity
 
 	move_and_slide()
+	sync_position.rpc(position)
 
 func can_place_voxel_at(pos: Vector3i) -> bool:
 	var space_state = get_viewport().get_world_3d().get_direct_space_state()
@@ -149,12 +146,18 @@ func can_place_voxel_at(pos: Vector3i) -> bool:
 	var hits = space_state.intersect_shape(params)
 	return hits.size() == 0
 
+@rpc("authority", "call_remote", "reliable", 0)
 func place(center: Vector3i):
 	_terrain_tool.channel = VoxelBuffer.CHANNEL_TYPE
 	_terrain_tool.value = 1
 	_terrain_tool.do_point(center)
 
+@rpc("authority", "call_remote", "reliable", 0)
 func dig(center: Vector3i):
 	_terrain_tool.channel = VoxelBuffer.CHANNEL_TYPE
 	_terrain_tool.value = 0
 	_terrain_tool.do_point(center)
+
+@rpc("authority", "call_remote", "unreliable", 0)
+func sync_position(pos: Vector3):
+	position = pos
