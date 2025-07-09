@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://dmud7jyjre2mf"]
+[gd_scene load_steps=14 format=3 uid="uid://dmud7jyjre2mf"]
 
 [ext_resource type="Script" uid="uid://cwurnb6lumi51" path="res://scenes/voxcalibur/voxcalibur.gd" id="1_r4h3b"]
+[ext_resource type="Texture2D" uid="uid://0o7k6huyx2ue" path="res://textures/voxcalibur_textures.png" id="2_hdwae"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_r4h3b"]
 ground_color = Color(0.149, 0.902, 0.745, 1)
@@ -36,7 +37,14 @@ channel = 0
 
 [sub_resource type="VoxelBlockyModelEmpty" id="VoxelBlockyModelEmpty_r4h3b"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ccuwk"]
+albedo_texture = ExtResource("2_hdwae")
+texture_filter = 0
+
 [sub_resource type="VoxelBlockyModelCube" id="VoxelBlockyModelCube_hdwae"]
+atlas_size_in_tiles = Vector2i(6, 6)
+tile_top = Vector2i(1, 0)
+material_override_0 = SubResource("StandardMaterial3D_ccuwk")
 
 [sub_resource type="VoxelBlockyLibrary" id="VoxelBlockyLibrary_ccuwk"]
 models = Array[VoxelBlockyModel]([SubResource("VoxelBlockyModelEmpty_r4h3b"), SubResource("VoxelBlockyModelCube_hdwae")])
